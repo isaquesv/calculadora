@@ -1,0 +1,95 @@
+/* Personalizando a barra de rolagem (scrollbar) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Personalizando o corpo da página */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: black;
+}
+
+/* Personalizando o conteúdo da página */
+/* Personalizando a calculadora */
+div#calculadora div#body {
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: #DDDDDD;
+}
+div#calculadora div#body div#tela {
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: #484848;
+}
+div#calculadora div#body div#tela div#container-formula {
+    overflow: hidden;
+    box-sizing: border-box;
+    text-align: right;
+}
+div#calculadora div#body div#tela div#container-formula div#formula {
+    display: inline-block;
+    color: #F3F3F3;
+    white-space: nowrap;
+}
+div#calculadora div#body div#tela div#container-resultado {
+    height: 30px;
+    overflow: hidden;
+    box-sizing: border-box;
+    text-align: right;
+}
+div#calculadora div#body div#tela div#container-resultado div#resultado {
+    display: inline-block;
+    height: 30px;
+    color: #F3F3F3;
+    white-space: nowrap;
+    font-size: 24px;
+}
+
+/* Personalizando o histórico da calculadora */
+div#historico div#body {
+    border: 1px solid gray;
+    border-radius: 6px;
+    background-color: #DDDDDD;
+}
+div#historico div#body div#header {
+    border-bottom: 1px solid gray;
+}
+div#historico div#body div#header span#excluirHistorico {
+    cursor: pointer;
+}
+div#historico div#body div#header span#excluirHistorico:hover {
+    color: #0079cf;
+}
+div#historico div#body div#main {
+    height: 244px;
+    max-height: 244px;
+    overflow-y: auto;
+    border-bottom: 1px solid gray;
+}
+div#historico div#body div#main div.calculo-registrado {
+    height: 56px;
+    font-size: 24px;
+    white-space: nowrap;
+    overflow-x: auto;
+    cursor: pointer;
+}
+
+div#historico div#body div#main div.calculo-registrado:hover {
+    background-color: #CCCCCC;
+}
+div#historico div#body div#footer {
+    text-align: right;
+}
+div#historico div#body div#footer a {
+    text-decoration: none;
+}
