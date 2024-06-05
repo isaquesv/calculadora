@@ -26,28 +26,28 @@ div#calculadora div#body {
     border-radius: 6px;
     background-color: #DDDDDD;
 }
-div#calculadora div#body div#tela {
+div#calculadora div#body header#tela {
     border: 1px solid gray;
     border-radius: 6px;
     background-color: #484848;
 }
-div#calculadora div#body div#tela div#container-formula {
+div#calculadora div#body header#tela div#container-resposta-anterior {
     overflow: hidden;
     box-sizing: border-box;
     text-align: right;
 }
-div#calculadora div#body div#tela div#container-formula div#formula {
+div#calculadora div#body header#tela div#container-resposta-anterior div#resposta-anterior {
     display: inline-block;
     color: #F3F3F3;
     white-space: nowrap;
 }
-div#calculadora div#body div#tela div#container-resultado {
+div#calculadora div#body header#tela div#container-resultado-calculo {
     height: 30px;
     overflow: hidden;
     box-sizing: border-box;
     text-align: right;
 }
-div#calculadora div#body div#tela div#container-resultado div#resultado {
+div#calculadora div#body header#tela div#container-resultado-calculo div#resultado-calculo {
     display: inline-block;
     height: 30px;
     color: #F3F3F3;
@@ -61,22 +61,22 @@ div#historico div#body {
     border-radius: 6px;
     background-color: #DDDDDD;
 }
-div#historico div#body div#header {
+div#historico div#body header {
     border-bottom: 1px solid gray;
 }
-div#historico div#body div#header span#excluirHistorico {
+div#historico div#body header span#excluir-historico {
     cursor: pointer;
 }
-div#historico div#body div#header span#excluirHistorico:hover {
+div#historico div#body header span#excluir-historico:hover {
     color: #0079cf;
 }
-div#historico div#body div#main {
+div#historico div#body main {
     height: 244px;
     max-height: 244px;
     overflow-y: auto;
     border-bottom: 1px solid gray;
 }
-div#historico div#body div#main div.calculo-registrado {
+div#historico div#body main div.calculo-registrado {
     height: 56px;
     font-size: 24px;
     white-space: nowrap;
@@ -84,12 +84,12 @@ div#historico div#body div#main div.calculo-registrado {
     cursor: pointer;
 }
 
-div#historico div#body div#main div.calculo-registrado:hover {
+div#historico div#body main div.calculo-registrado:hover {
     background-color: #CCCCCC;
 }
-div#historico div#body div#footer {
+div#historico div#body footer {
     text-align: right;
 }
-div#historico div#body div#footer a {
+div#historico div#body footer a {
     text-decoration: none;
 }
