@@ -15,14 +15,10 @@ Olá, seja bem-vindo! Este projeto é uma calculadora simples desenvolvida com *
 ```
 git clone https://github.com/isaquesv/calculadora.git
 ```
-<br><br>
+<br>
 
-## Screenshots
-<em>Imagem desktop:</em><br><br>
-![Desktop image](https://github.com/isaquesv/calculadora/assets/166270471/c80c2400-0245-477f-b5c3-242ea1370aea)
-
-<br><em>Imagem mobile:</em><br><br>
-![Mobile image](https://github.com/isaquesv/calculadora/assets/166270471/0b07cdef-5630-480c-9317-d5e6162bb382)<br><br>
+## Vídeos
+https://github.com/isaquesv/calculadora/assets/166270471/6f02d292-7428-4d86-b7b0-c54111a0ddfa
 
 ## Finalização
 Obrigado por visitar meu projeto!! 😁
