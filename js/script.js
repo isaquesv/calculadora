@@ -1,117 +1,129 @@
-// Função responsável por excluir todos os cálculos salvos no histórico
-function excluirHistorico() {
-    // Se existir um ou mais cálculos salvos no histórico todos serão removidos
-    if (document.querySelectorAll(".calculo-registrado").length > 0) {
-        document.querySelectorAll(".calculo-registrado").forEach(function(boxResult) {
-            boxResult.remove();
-        });
+let respostaAnterior = 0; // Ans - Answer
+let primeiraAcao = false;
 
-        // E o aviso volta a ser exibido
-        if (document.querySelector("#aviso").classList.contains("d-none"))
-            document.querySelector("#aviso").classList.remove("d-none");
-    }
-}
+const divCalculadora = document.querySelector("div#calculadora");
+let todasTeclas = document.querySelectorAll("button.tecla");
+const divHistorico = document.querySelector("div#historico");
+const buttonExcluirHistorico = document.querySelector("span#excluir-historico");
+const spanAvisoNenhumCalculo = document.querySelector("span#aviso-nenhum-calculo");
 
-// Função responsável por gerenciar as ações da calculadora
+let buttonApagarValorDoCalculo = document.querySelector("button#ac-ce");
+let divRespostaAnterior = document.querySelector("div#resposta-anterior");
+
+
 function acaoCalculadora(valorTecla) {
-    // Se essa for a primeira ação da calculadora..
-    if (contador == 0) {
-        document.querySelector("#formula").textContent = "Ans = " + answer;
-        document.querySelector("#ac-ce").textContent = "CE";
+    if (primeiraAcao == false) {
+        divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
+        buttonApagarValorDoCalculo.textContent = "CE";
 
-        contador++;
+        primeiraAcao = true;
     }
 
-    var resultado = document.querySelector("#resultado");
-    var ultimoValorInserido = resultado.textContent.slice(-1);
-    var contadorDeEspacosVazios;
+    let divResultadoCalculo = document.querySelector("div#resultado-calculo");
+    let ultimoValorInserido = divResultadoCalculo.textContent.slice(-1);
+    let penultimoValorInserido = divResultadoCalculo.textContent.slice(-2, -1);
+    let preAntepenultimoValorInserido = divResultadoCalculo.textContent.slice(-4, -3);
     
-    // se valorTecla for diferente de "Enter" ou "=" o textContent de button#ac-ce é alterado 
-    if (valorTecla != "Enter" || valorTecla != "=")
-        document.querySelector("#ac-ce").textContent = "CE";
+    if (valorTecla != "Enter" || valorTecla != "="){
+        buttonApagarValorDoCalculo.textContent = "CE";
+    }
 
     switch (valorTecla) {
-        // caso valorTecla for "," ou "."..
         case ",":
         case ".":
-            // se valorTecla for "," é substituido por "."
-            if (valorTecla === ",") valorTecla = ".";
+            if (valorTecla == ",") {
+                valorTecla = ".";
+            }
+            
+            let contadorDeEspacosVazios;
+            let contadorDePontos = divResultadoCalculo.textContent.split(".").length - 1;
 
-            // se o ultimo caractere presente no textContent de div#resultado não for vazio..
-            if (resultado.textContent.slice(-1) !== " ") {
-                (resultado.textContent.split(' ').length - 1 == 0) ? contadorDeEspacosVazios = 1: contadorDeEspacosVazios = 1 + resultado.textContent.split(' ').length - 1;
-                // IF(?) -> Se não existirem espaços vazios contadorDeEspacosVazios = 1 | ELSE(:) -> Se existerem espaços vazios contadorDeEspacosVazios = 1 + a quantidade de espaços vazios
+            if (ultimoValorInserido != " ") {
+                if (divResultadoCalculo.textContent.split(" ").length - 1 == 0) {
+                    contadorDeEspacosVazios = 1;
+                }
+                else {
+                    contadorDeEspacosVazios = 1 + divResultadoCalculo.textContent.split(" ").length - 1;
+                }
                     
-                var contadorDePontos = resultado.textContent.split('.').length - 1;
-                if (contadorDeEspacosVazios > 0 && contadorDeEspacosVazios > contadorDePontos && (ultimoValorInserido != "(" && ultimoValorInserido >= 0))
-                    resultado.textContent += valorTecla;
+                if (contadorDeEspacosVazios > 0 && contadorDeEspacosVazios > contadorDePontos && (ultimoValorInserido != "(" && ultimoValorInserido >= 0)) {
+                    divResultadoCalculo.textContent += valorTecla;
+                }
             }
             break;
 
-        // caso valorTecla for "0"..
         case "0":
-            // se o ultimo caractere presente no textContent de div#resultado for "y", para casos do resultado ser "Infinity" ou "-Infinity"
-            if (resultado.textContent.slice(-1) === "y")
-                resultado.textContent += " " + valorTecla;
-            else if (resultado.textContent.length > 1 || resultado.textContent != 0 || resultado.textContent == "")
-                resultado.textContent += valorTecla;            
+            if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent += " " + valorTecla;
+            }
+            else if (divResultadoCalculo.textContent.length > 1 || divResultadoCalculo.textContent != 0 || divResultadoCalculo.textContent == "") {
+                divResultadoCalculo.textContent += valorTecla;
+            }
             break;
 
-        // caso valorTecla for "+"..
         case "+":
-            if (resultado.textContent.length > 0 && resultado.textContent.slice(-1) !== "." && resultado.textContent.slice(-2, -1) !== "+" && resultado.textContent.slice(-2, -1) !== "-" && resultado.textContent.slice(-2, -1) !== "x" && resultado.textContent.slice(-2, -1) !== "/" && resultado.textContent.slice(-1) !== "(")
-                resultado.textContent += " " + valorTecla + " ";
-            else if (resultado.textContent.length > 0 && resultado.textContent.slice(-2, -1) === "-" && resultado.textContent.slice(-1) !== "(" && resultado.textContent.slice(-4, -3) !== "(" && resultado.textContent.slice(-2, -1) !== "-" && resultado.textContent.slice(-2, -1) !== "/" && resultado.textContent.slice(-2, -1) !== "x") {
-                resultado.textContent = resultado.textContent.substring(0, resultado.textContent.length - 3);
-                resultado.textContent += " " + valorTecla + " ";
+            if (divResultadoCalculo.textContent.length > 0 && ultimoValorInserido != "." && penultimoValorInserido != "+" && penultimoValorInserido != "-" && penultimoValorInserido != "x" && penultimoValorInserido != "/" && ultimoValorInserido != "(") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
             }
-            else if (resultado.textContent.slice(-1) === "y")
-                resultado.textContent += " " + valorTecla + " ";
-
+            else if (divResultadoCalculo.textContent.length > 0 && penultimoValorInserido == "-" && ultimoValorInserido != "(" && preAntepenultimoValorInserido != "(" && penultimoValorInserido != "-" && penultimoValorInserido != "/" && penultimoValorInserido != "x") {
+                // Remove os últimos 3 caracteres
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
+            else if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
             break;
         
-        // caso valorTecla for "-"..
         case "-":
-            if (resultado.textContent.length == 1 && ultimoValorInserido == 0)
-                resultado.textContent = " " + valorTecla + " ";
-            else if (resultado.textContent.slice(-1) !== "." && resultado.textContent.slice(-2, -1) !== "+" && resultado.textContent.slice(-2, -1) !== "-")
-                resultado.textContent += " " + valorTecla + " ";
-            else if (resultado.textContent.slice(-2, -1) === "+") {
-                resultado.textContent = resultado.textContent.substring(0, resultado.textContent.length - 3);
-                resultado.textContent += " " + valorTecla + " ";
+            if (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0) {
+                divResultadoCalculo.textContent = " " + valorTecla + " ";
             }
-            else if (resultado.textContent.slice(-1) === "y")
-                resultado.textContent += " " + valorTecla + " ";
-
+            else if (ultimoValorInserido != "." && penultimoValorInserido != "+" && penultimoValorInserido != "-") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
+            else if (penultimoValorInserido == "+") {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
+            else if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
             break;
 
-        // caso valorTecla for "*", "x" ou "/"..
         case "*":
         case "x":
         case "/":
-            if (valorTecla === "*") valorTecla = "x";
+            if (valorTecla == "*") {
+                valorTecla = "x";
+            }
 
-            if (resultado.textContent.slice(-1) !== "." && resultado.textContent.length > 0 && resultado.textContent.slice(-2, -1) !== "+" && resultado.textContent.slice(-2, -1) !== "-" && resultado.textContent.slice(-2, -1) !== "/" && resultado.textContent.slice(-2, -1) !== "x" && resultado.textContent.slice(-1) !== "(")
-                resultado.textContent += " " + valorTecla + " ";
-            else if (resultado.textContent.length == 0)
-                resultado.textContent += "0 " + valorTecla + " ";
-            else if (resultado.textContent.slice(-1) === "y")
-                resultado.textContent += " " + valorTecla + " ";
+            if (ultimoValorInserido != "." && divResultadoCalculo.textContent.length > 0 && penultimoValorInserido != "+" && penultimoValorInserido != "-" && penultimoValorInserido != "/" && penultimoValorInserido != "x" && ultimoValorInserido != "(") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
+            else if (divResultadoCalculo.textContent.length == 0) {
+                divResultadoCalculo.textContent += "0 " + valorTecla + " ";
+            }
+            else if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent += " " + valorTecla + " ";
+            }
             break;
         
-        // caso valorTecla for "Ans"..
         case "Ans":
-            if (resultado == 0 && ultimoValorInserido != "." && (resultado.textContent.slice(-2, -1) === "+" || resultado.textContent.slice(-2, -1) === "-" || resultado.textContent.slice(-2, -1) === "x" || resultado.textContent.slice(-2, -1) === "/"))
-                resultado.textContent = valorTecla;
-            else if (ultimoValorInserido == "s")
-                resultado.textContent += " x " + valorTecla;
-            else if (ultimoValorInserido != "." && ultimoValorInserido != "(" && resultado.textContent.slice(-2, -1) !== "+" && resultado.textContent.slice(-2, -1) !== "-" && resultado.textContent.slice(-2, -1) !== "x" && resultado.textContent.slice(-2, -1) !== "/")
-                resultado.textContent += " x " + valorTecla;
-            else
-                resultado.textContent += valorTecla;
+            if (document.querySelector("div#resultado-calculo") == 0 && ultimoValorInserido != "." && (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/")) {
+                divResultadoCalculo.textContent = valorTecla;
+            }
+            else if (ultimoValorInserido == "s") {
+                divResultadoCalculo.textContent += " x " + valorTecla;
+            }
+            else if (ultimoValorInserido != "." && ultimoValorInserido != "(" && penultimoValorInserido != "+" && penultimoValorInserido != "-" && penultimoValorInserido != "x" && penultimoValorInserido != "/") {
+                divResultadoCalculo.textContent += " x " + valorTecla;
+            }
+            else {
+                divResultadoCalculo.textContent += valorTecla;
+            }
             break;
 
-        // caso valorTecla for "1", "2", "3", "4", "5", "6", "7", "8" ou "9"..
         case "1":
         case "2":
         case "3":
@@ -121,93 +133,102 @@ function acaoCalculadora(valorTecla) {
         case "7":
         case "8":
         case "9":
-            if (((resultado.textContent.length == 1 && resultado == 0) && ultimoValorInserido != ".") || (resultado.textContent.length == 1 && ultimoValorInserido == 0))
-                resultado.textContent = valorTecla;
-            else if (ultimoValorInserido != "s")
-                resultado.textContent += valorTecla;    
-            else
-                resultado.textContent += " x " + valorTecla;    
-            
+            if (((divResultadoCalculo.textContent.length == 1 && document.querySelector("div#resultado-calculo") == 0) && ultimoValorInserido != ".") || (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0)) {
+                divResultadoCalculo.textContent = valorTecla;
+            }
+            else if (ultimoValorInserido != "s") {
+                divResultadoCalculo.textContent += valorTecla;
+            }    
+            else {
+                divResultadoCalculo.textContent += " x " + valorTecla;
+            }
             break;
 
-        // caso valorTecla for "("..
         case "(":
-            if (resultado.textContent.length == 1 && ultimoValorInserido == 0) {
-                resultado.textContent = "("
+            if (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0) {
+                divResultadoCalculo.textContent = "("
             }
-            else if (resultado.textContent.slice(-2, -1) == "+" || resultado.textContent.slice(-2, -1) == "-" || resultado.textContent.slice(-2, -1) == "x" || resultado.textContent.slice(-2, -1) == "/") {
-                resultado.textContent += " (";
+            else if (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/") {
+                divResultadoCalculo.textContent += " (";
             }
-            else if ((!isNaN(ultimoValorInserido) && resultado.textContent != 0) || resultado.textContent.slice(-1) == "s") {
-                resultado.textContent += " x (";
+            else if ((!isNaN(ultimoValorInserido) && divResultadoCalculo.textContent != 0) || ultimoValorInserido == "s") {
+                divResultadoCalculo.textContent += " x (";
             }
             break;
             
-        // caso valorTecla for ")"..
         case ")":
-            var contadorDeAberturaDeParenteses = resultado.textContent.split('(').length - 1;
-            var contadorDeFechamentoDeParenteses = resultado.textContent.split(')').length - 1;
+            var contadorDeAberturaDeParenteses = divResultadoCalculo.textContent.split("(").length - 1;
+            var contadorDeFechamentoDeParenteses = divResultadoCalculo.textContent.split(")").length - 1;
             
-            if (contadorDeAberturaDeParenteses > 0 && contadorDeAberturaDeParenteses > contadorDeFechamentoDeParenteses && (ultimoValorInserido != "("))
-                resultado.textContent += ")";
+            if (contadorDeAberturaDeParenteses > 0 && contadorDeAberturaDeParenteses > contadorDeFechamentoDeParenteses && (ultimoValorInserido != "(")) {
+                divResultadoCalculo.textContent += ")";
+            }
             break;
 
-        // caso valorTecla for "AC"..
         case "AC":
-            resultado.textContent = 0;
-            document.querySelector("#formula").textContent = "Ans = " + answer;
+            divResultadoCalculo.textContent = 0;
+            divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
             break;
 
-        // caso valorTecla for "CE"..
         case "CE":
-            if (resultado.textContent.slice(-1) == "" || resultado.textContent.slice(-1) == " " || resultado.textContent.slice(-1) == "+" || resultado.textContent.slice(-1) == "-" || resultado.textContent.slice(-1) == "x" || resultado.textContent.slice(-1) == "/" || ultimoValorInserido == "s")
-                resultado.textContent = resultado.textContent.substring(0, resultado.textContent.length - 3);
-            else if (resultado.textContent.slice(-1) == "y")
-                resultado.textContent = resultado.textContent.substring(0, resultado.textContent.length - 8);
-            // Se o ultimo valor presente no resultado tiver um tamanho, de caracteres, maior que 12
-            else if (resultado.textContent.split(" ")[resultado.textContent.split(" ").length - 1].includes('e'))
-                resultado.textContent = resultado.textContent.replace(/\b\d+(\.\d+)?e[+-]?\d+\b\s*$/, '');
-            else
-                resultado.textContent = resultado.textContent.substring(0, resultado.textContent.length - 1);                    
+            if (ultimoValorInserido == "" || ultimoValorInserido == " " || ultimoValorInserido == "+" || ultimoValorInserido == "-" || ultimoValorInserido == "x" || ultimoValorInserido == "/" || ultimoValorInserido == "s") {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
+            }
+            else if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 8);
+            }
+            // Se o ultimo valor presente no resultado tiver um tamanho de caracteres maior que 12
+            else if (divResultadoCalculo.textContent.split(" ")[divResultadoCalculo.textContent.split(" ").length - 1].includes("e")) {
+                // Substitui o ultimo valor por ""
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/\b\d+(\.\d+)?e[+-]?\d+\b\s*$/, "");
+            }
+            else {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 1);
+            }                    
 
-            if (resultado.textContent == "") resultado.textContent = 0;
+            if (divResultadoCalculo.textContent == "") {
+                divResultadoCalculo.textContent = 0;
+            }
             break;
 
-        // caso valorTecla for "Enter" ou "="..
         case "Enter":
         case "=":
-            if (resultado.textContent.slice(-1) !== " " && resultado.textContent.slice(-1) !== "(") {
-                if (resultado.textContent != 0) {
-                    var contadorDeAberturaDeParenteses = resultado.textContent.split('(').length - 1;
-                    var contadorDeFechamentoDeParenteses = resultado.textContent.split(')').length - 1;
+            if (ultimoValorInserido != " " && ultimoValorInserido != "(") {
+                if (divResultadoCalculo.textContent != 0) {
+                    var contadorDeAberturaDeParenteses = divResultadoCalculo.textContent.split('(').length - 1;
+                    var contadorDeFechamentoDeParenteses = divResultadoCalculo.textContent.split(')').length - 1;
                     
                     if (contadorDeAberturaDeParenteses > contadorDeFechamentoDeParenteses) {
                         contadorDeAberturaDeParenteses - contadorDeFechamentoDeParenteses;
                         for (i = 0; i < contadorDeAberturaDeParenteses; i++) {
-                            resultado.textContent += ")";
+                            divResultadoCalculo.textContent += ")";
                         }
                     }
 
-                    var formulaDoCalculo = resultado.textContent;
+                    var formulaDoCalculo = divResultadoCalculo.textContent;
 
-                    document.querySelector("#formula").textContent = formulaDoCalculo;
-                    resultado.textContent = resultado.textContent.replace(/\s/g, "");
-                    resultado.textContent = resultado.textContent.replace(/x/g, "*");
-                    resultado.textContent = resultado.textContent.replace(/Ans/g, answer);
-                    resultado.textContent = resultado.textContent.replace(/(\d)\(/g, "$1*(");
+                    divRespostaAnterior.textContent = formulaDoCalculo;
+                    divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/\s/g, "");
+                    divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/x/g, "*");
+                    divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/Ans/g, respostaAnterior);
+                    divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/(\d)\(/g, "$1*(");
                     
-                    var resultadoDoCalculo = eval(resultado.textContent);
+                    var resultadoDoCalculo = eval(divResultadoCalculo.textContent);
                     if (resultadoDoCalculo < 0) {
                         resultadoDoCalculo = resultadoDoCalculo.toString();
                         resultadoDoCalculo = resultadoDoCalculo.slice(0, 1) + ' ' + resultadoDoCalculo.slice(1);
                     }
 
-                    resultado.textContent = resultadoDoCalculo;
-                    if (resultado.textContent != "") answer = resultadoDoCalculo;
+                    // Atualizando os valores..
+                    ultimoValorInserido = divResultadoCalculo.textContent.slice(-1);
+                    penultimoValorInserido = divResultadoCalculo.textContent.slice(-2, -1);
+
+                    divResultadoCalculo.textContent = resultadoDoCalculo;
+                    if (divResultadoCalculo.textContent != "") respostaAnterior = resultadoDoCalculo;
 
                     if (formulaDoCalculo.indexOf("+") > -1 || formulaDoCalculo.indexOf("-") > -1 || formulaDoCalculo.indexOf("x") > -1 || formulaDoCalculo.indexOf("/") > -1) {
-                        if (!document.querySelector("#aviso").classList.contains("d-none"))
-                            document.querySelector("#aviso").classList.add("d-none");
+                        if (!spanAvisoNenhumCalculo.classList.contains("d-none"))
+                            spanAvisoNenhumCalculo.classList.add("d-none");
                         
                         if (resultadoDoCalculo.toString().length > 12)
                             resultadoDoCalculo = parseFloat(resultadoDoCalculo).toExponential();
@@ -216,17 +237,17 @@ function acaoCalculadora(valorTecla) {
                         divResultado.onclick = function() {
                             if (resultadoDoCalculo != "Infinity" && resultadoDoCalculo != "-Infinity") {
                                 
-                                if (resultado.textContent.split(' ').length - 1 > 1) {
+                                if (divResultadoCalculo.textContent.split(' ').length - 1 > 1) {
                                     if (eval(resultadoDoCalculo) < 0)
-                                        resultado.textContent += " (" + resultadoDoCalculo + ")";
-                                    else if (resultado.textContent.slice(-2, -1) !== "+" || resultado.textContent.slice(-2, -1) !== "-" || resultado.textContent.slice(-2, -1) !== "x" || resultado.textContent.slice(-2, -1) !== "/")
-                                        resultado.textContent += resultadoDoCalculo;
+                                        divResultadoCalculo.textContent += " (" + resultadoDoCalculo + ")";
+                                    else if (penultimoValorInserido != "+" || penultimoValorInserido != "-" || penultimoValorInserido != "x" || penultimoValorInserido != "/")
+                                        divResultadoCalculo.textContent += resultadoDoCalculo;
                                 }
-                                else if (resultado.textContent.slice(-1) == "(") {
-                                    resultado.textContent += resultadoDoCalculo;
+                                else if (ultimoValorInserido == "(") {
+                                    divResultadoCalculo.textContent += resultadoDoCalculo;
                                 }
                                 else {
-                                    resultado.textContent = resultadoDoCalculo;
+                                    divResultadoCalculo.textContent = resultadoDoCalculo;
                                 }
 
                             }
@@ -235,15 +256,15 @@ function acaoCalculadora(valorTecla) {
                         divResultado.classList.add("calculo-registrado", "pe-2", "ps-2");
                         divResultado.textContent = formulaDoCalculo + " = " + resultadoDoCalculo;
 
-                        document.querySelector("#main").appendChild(divResultado);
-                        document.querySelector("#main").scrollTop = document.querySelector("#main").scrollHeight;
+                        document.querySelector("main#historico").appendChild(divResultado);
+                        document.querySelector("main#historico").scrollTop = document.querySelector("main#historico").scrollHeight;
 
-                        document.querySelector("#formula").textContent = "Ans = " + answer;
-                        document.querySelector("#ac-ce").textContent = "AC";
+                        divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
+                        buttonApagarValorDoCalculo.textContent = "AC";
                     }
                     else {
-                        document.querySelector("#formula").textContent = "Ans = " + answer;
-                        document.querySelector("#ac-ce").textContent = "CE";
+                        divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
+                        buttonApagarValorDoCalculo.textContent = "CE";
                     }
                 }
             }
@@ -251,77 +272,84 @@ function acaoCalculadora(valorTecla) {
     }
 
     // Ajusta o div#container-formula e div#container-resultado para que o conteúdo seja exibido corretamente da direita para esquerda
-    document.getElementById("container-formula").scrollLeft = document.getElementById("formula").offsetWidth;
-    document.getElementById("container-resultado").scrollLeft = document.getElementById("resultado").offsetWidth;
+    document.querySelector("div#container-resposta-anterior").scrollLeft = document.querySelector("div#resposta-anterior").offsetWidth;
+    document.querySelector("div#container-resultado-calculo").scrollLeft = document.querySelector("div#resultado-calculo").offsetWidth;
 }
 
-// Função responsável por ajustar os elementos presentes no body
-function resize() {
-    if (document.body.clientWidth <= 1024) {
-        document.querySelector("#calculadora").classList.add("mb-4");
-
-        if (document.querySelector("#calculadora").classList.contains("col-6")) {
-            document.querySelector("#calculadora").classList.remove("col-6");
-            document.querySelector("#calculadora").classList.remove("ps-0");
-            document.querySelector("#calculadora").classList.remove("pe-3");
-            document.querySelector("#historico").classList.remove("col-6");
-            document.querySelector("#historico").classList.remove("ps-3");
-            document.querySelector("#historico").classList.remove("pe-0");
-        }
-
-        document.querySelector("#calculadora").classList.add("col-12");
-        document.querySelector("#historico").classList.add("col-12");
-    
-    } else {    
-        if (document.querySelector("#calculadora").classList.contains("mb-4")) {
-            document.querySelector("#calculadora").classList.remove("mb-4");
-            document.querySelector("#calculadora").classList.remove("col-12");
-            document.querySelector("#historico").classList.remove("col-12");
-        }
-
-        document.querySelector("#calculadora").classList.add("col-6");
-        document.querySelector("#calculadora").classList.add("ps-0");
-        document.querySelector("#calculadora").classList.add("pe-3");
-        
-        document.querySelector("#historico").classList.add("col-6");
-        document.querySelector("#historico").classList.add("ps-3");
-        document.querySelector("#historico").classList.add("pe-0");
-
-    }
-}
-
-
-var answer = 0;
-var contador = 0;
-
-resize();
-// Caso as medidas da tela sejam alteradas a função resize é executada
-window.addEventListener("resize", function() {
-    resize();
-});
-
-// Atribuindo a função acaoCalculadora aos elementos button.tecla e passando seu respectivo texto como parâmetro 
-document.querySelectorAll(".tecla").forEach(function(tecla) {
+todasTeclas.forEach(function(tecla) {
     tecla.onclick = function() {
-        acaoCalculadora(tecla.textContent);
+        let textoDaTecla = tecla.textContent;
+        acaoCalculadora(textoDaTecla);
     }
 });
 
-// Atribuindo a função excluirHistorico ao elemento span#excluirHistorico
-document.querySelector("#excluirHistorico").onclick = function() {
-    excluirHistorico();
+buttonExcluirHistorico.onclick = function() {
+    excluirHistoricoDeCalculos();
 }
 
-// Quando uma tecla é pressionada..
 document.addEventListener("keydown", function(event) {
-    // Se o evento da tecla for um número, ou "*", ou "(", ou ")", ou "-", ou "+", ou "=", ou "/", ou ".", ou ",", ou "Enter"..
-    if (!isNaN(event.key)  || event.key == "x" || event.key == "*" || event.key == "(" || event.key == ")" || event.key == "-" || event.key == "+" || event.key == "=" || event.key == "/" || event.key == "." || event.key == ",")
-        acaoCalculadora(event.key.toString());
-    else if (event.key == "Backspace")
-        // A função acaoCalculadora é executada e o texto atual do elemento #ac-ce é passado como parâmetro
-        acaoCalculadora(document.querySelector("#ac-ce").textContent);
-    else if (event.key == "Enter" || event.key == "NumpadEnter") {
-        event.preventDefault();
-        acaoCalculadora(event.key.toString());
+    let teclaPressionada = event.key.toString();
+
+    if (!isNaN(teclaPressionada) || teclaPressionada == "x" || teclaPressionada == "*" || teclaPressionada == "(" || teclaPressionada == ")" || teclaPressionada == "-" || teclaPressionada == "+" || teclaPressionada == "=" || teclaPressionada == "/" || teclaPressionada == "." || teclaPressionada == "," || teclaPressionada == "Enter" || teclaPressionada == "NumpadEnter") {
+        if (teclaPressionada == "Enter" || teclaPressionada == "NumpadEnter") {
+            event.preventDefault();
+        }
+
+        acaoCalculadora(teclaPressionada);
     }
+    else if (teclaPressionada == "Backspace") {
+        acaoCalculadora(apagarValorDoCalculo.textContent);
+    }
+});
+
+function excluirHistoricoDeCalculos() {
+    let todosCalculosRegistrados = document.querySelectorAll("div.calculo-registrado");
+    if (todosCalculosRegistrados.length > 0) {
+        todosCalculosRegistrados.forEach(function(boxResult) {
+            boxResult.remove();
+        });
+
+        spanAvisoNenhumCalculo.classList.remove("d-none");
+    }
+}
+
+function redimensionarTela() {
+    let larguraDaPagina = document.body.clientWidth;
+
+    if (larguraDaPagina <= 1024) {
+        divCalculadora.classList.add("mb-4");
+
+        if (divCalculadora.classList.contains("col-6")) {
+            divCalculadora.classList.remove("col-6");
+            divCalculadora.classList.remove("ps-0");
+            divCalculadora.classList.remove("pe-3");
+
+            divHistorico.classList.remove("col-6");
+            divHistorico.classList.remove("ps-3");
+            divHistorico.classList.remove("pe-0");
+        }
+
+        divCalculadora.classList.add("col-12");
+        divHistorico.classList.add("col-12");
+    }
+    else {
+        if (divCalculadora.classList.contains("mb-4")) {
+            divCalculadora.classList.remove("mb-4");
+            divCalculadora.classList.remove("col-12");
+            divHistorico.classList.remove("col-12");
+        }
+
+        divCalculadora.classList.add("col-6");
+        divCalculadora.classList.add("ps-0");
+        divCalculadora.classList.add("pe-3");
+        
+        divHistorico.classList.add("col-6");
+        divHistorico.classList.add("ps-3");
+        divHistorico.classList.add("pe-0");
+    }
+}
+
+redimensionarTela();
+window.addEventListener("resize", function() {
+    redimensionarTela();
 });
