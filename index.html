@@ -13,17 +13,17 @@
     <div class="row m-4">
         <div id="calculadora">
             <div id="body" class="p-3 h-100">
-                <div id="tela" class="p-2">
-                    <div id="container-formula" class="mb-1">
-                        <div id="formula"></div>
+                <header id="tela" class="p-2">
+                    <div id="container-resposta-anterior" class="mb-1">
+                        <div id="resposta-anterior"></div>
                     </div>
         
-                    <div id="container-resultado">
-                        <div id="resultado">0</div>
+                    <div id="container-resultado-calculo">
+                        <div id="resultado-calculo">0</div>
                     </div>
-                </div>
+                </header>
                 
-                <div id="teclado" class="mt-3">
+                <main id="teclado" class="mt-3">
                     <div class="row m-0 p-0 mb-2">
                         <div class="col-3 p-0 pe-1"><button type="button" class="btn tecla btn-dark w-100 pt-2 pb-2 fw-bold">(</button></div>
                         <div class="col-3 p-0 ps-1 pe-1"><button type="button" class="btn tecla btn-dark w-100 pt-2 pb-2 fw-bold">)</button></div>
@@ -58,25 +58,26 @@
                         <div class="col-3 p-0 ps-1 pe-1"><button type="button" class="btn tecla btn-dark w-100 pt-2 pb-2 fw-bold">=</button></div>
                         <div class="col-3 p-0 ps-1"><button type="button" class="btn tecla btn-dark w-100 pt-2 pb-2 fw-bold">+</button></div>
                     </div>
-                </div>
+                </main>
             </div>
         </div>
 
         <div id="historico">
             <div id="body">
-                <div id="header" class="d-flex p-3">
+                <header id="historico" class="d-flex p-3">
                     <h2 class="m-0">Histórico</h2>
-                    <span id="excluirHistorico"class="m-auto fw-bold me-0">Excluir</span>
-                </div>
-                <div id="main" class="p-3">
-                    <div id="aviso">Seus cálculos e resultados serão exibidos aqui para que você possa reutilizá-los</div>
-                </div>
-                <div id="footer" class="p-3">
+                    <span id="excluir-historico"class="m-auto fw-bold me-0">Excluir</span>
+                </header>
+                <main id="historico" class="p-3">
+                    <span id="aviso-nenhum-calculo">Seus cálculos e resultados serão exibidos aqui para que você possa reutilizá-los</span>
+                </main>
+                <footer id="historico" class="p-3">
                     <a href="https://github.com/isaquesv">Github - isaquesv</a>
-                </div>      
+                </footer>      
             </div>
         </div>
     </div>
+
 </body>
 <script src="js/script.js"></script>
 </html>
