@@ -27,6 +27,12 @@ function acaoCalculadora(valorTecla) {
     if (valorTecla != "Enter" || valorTecla != "="){
         buttonApagarValorDoCalculo.textContent = "CE";
     }
+    // Para casos onde o ultimo valor é "NaN", "Infinity" ou "-Infinity"
+    if (ultimoValorInserido == "N" || ultimoValorInserido == "y") {
+        divResultadoCalculo.textContent = 0;
+        divRespostaAnterior.textContent = "Ans = 0";
+        respostaAnterior = 0;
+    }
 
     switch (valorTecla) {
         case ",":
@@ -56,7 +62,13 @@ function acaoCalculadora(valorTecla) {
             if (ultimoValorInserido == "y") {
                 divResultadoCalculo.textContent += " " + valorTecla;
             }
-            else if (divResultadoCalculo.textContent.length > 1 || divResultadoCalculo.textContent != 0 || divResultadoCalculo.textContent == "") {
+            else if (ultimoValorInserido == " ") {
+                divResultadoCalculo.textContent += valorTecla;
+            }
+            else if(divResultadoCalculo.textContent.split(" ").length - 1 == 0 && (divResultadoCalculo.textContent.includes(".") || divResultadoCalculo.textContent > 0)) {
+                divResultadoCalculo.textContent += valorTecla;
+            }
+            else if (divResultadoCalculo.textContent.split(" ").length - 1 > 0 && (divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1).includes(".") || divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1) > 0)) {
                 divResultadoCalculo.textContent += valorTecla;
             }
             break;
@@ -171,7 +183,7 @@ function acaoCalculadora(valorTecla) {
             break;
 
         case "CE":
-            if (ultimoValorInserido == "" || ultimoValorInserido == " " || ultimoValorInserido == "+" || ultimoValorInserido == "-" || ultimoValorInserido == "x" || ultimoValorInserido == "/" || ultimoValorInserido == "s") {
+            if (ultimoValorInserido == "" || ultimoValorInserido == " " || ultimoValorInserido == "+" || ultimoValorInserido == "-" || ultimoValorInserido == "x" || ultimoValorInserido == "/" || ultimoValorInserido == "s" || ultimoValorInserido == "N") {
                 divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
             }
             else if (ultimoValorInserido == "y") {
@@ -235,13 +247,14 @@ function acaoCalculadora(valorTecla) {
                         
                         var divResultado = document.createElement("div");
                         divResultado.onclick = function() {
-                            if (resultadoDoCalculo != "Infinity" && resultadoDoCalculo != "-Infinity") {
-                                
-                                if (divResultadoCalculo.textContent.split(' ').length - 1 > 1) {
-                                    if (eval(resultadoDoCalculo) < 0)
+                            if (!isNaN(resultadoDoCalculo) && resultadoDoCalculo != "Infinity" && resultadoDoCalculo != "-Infinity") {    
+                                if (divResultadoCalculo.textContent.split(" ").length - 1 > 1) {
+                                    if (eval(resultadoDoCalculo) < 0) {
                                         divResultadoCalculo.textContent += " (" + resultadoDoCalculo + ")";
-                                    else if (penultimoValorInserido != "+" || penultimoValorInserido != "-" || penultimoValorInserido != "x" || penultimoValorInserido != "/")
+                                    }
+                                    else if (divResultadoCalculo.textContent.slice(-1) == " " || divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1).includes(".") || divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1) > 0) {
                                         divResultadoCalculo.textContent += resultadoDoCalculo;
+                                    }
                                 }
                                 else if (ultimoValorInserido == "(") {
                                     divResultadoCalculo.textContent += resultadoDoCalculo;
