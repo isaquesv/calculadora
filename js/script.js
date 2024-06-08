@@ -35,26 +35,65 @@ function acaoCalculadora(valorTecla) {
     }
 
     switch (valorTecla) {
-        case ",":
-        case ".":
-            if (valorTecla == ",") {
-                valorTecla = ".";
+        case "(":
+            if (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0) {
+                divResultadoCalculo.textContent = "("
             }
+            else if (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/") {
+                divResultadoCalculo.textContent += " (";
+            }
+            else if ((!isNaN(ultimoValorInserido) && divResultadoCalculo.textContent != 0) || ultimoValorInserido == "s") {
+                divResultadoCalculo.textContent += " x (";
+            }
+            break;
             
-            let contadorDeEspacosVazios;
-            let contadorDePontos = divResultadoCalculo.textContent.split(".").length - 1;
+        case ")":
+            var contadorDeAberturaDeParenteses = divResultadoCalculo.textContent.split("(").length - 1;
+            var contadorDeFechamentoDeParenteses = divResultadoCalculo.textContent.split(")").length - 1;
+            
+            if (contadorDeAberturaDeParenteses > 0 && contadorDeAberturaDeParenteses > contadorDeFechamentoDeParenteses && (ultimoValorInserido != "(")) {
+                divResultadoCalculo.textContent += ")";
+            }
+            break;
 
-            if (ultimoValorInserido != " ") {
-                if (divResultadoCalculo.textContent.split(" ").length - 1 == 0) {
-                    contadorDeEspacosVazios = 1;
-                }
-                else {
-                    contadorDeEspacosVazios = 1 + divResultadoCalculo.textContent.split(" ").length - 1;
-                }
-                    
-                if (contadorDeEspacosVazios > 0 && contadorDeEspacosVazios > contadorDePontos && (ultimoValorInserido != "(" && ultimoValorInserido >= 0)) {
-                    divResultadoCalculo.textContent += valorTecla;
-                }
+        case "Ans":
+            if (document.querySelector("div#resultado-calculo") == 0 && ultimoValorInserido != "." && (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/")) {
+                divResultadoCalculo.textContent = valorTecla;
+            }
+            else if (ultimoValorInserido == "s") {
+                divResultadoCalculo.textContent += " x " + valorTecla;
+            }
+            else if (ultimoValorInserido != "." && ultimoValorInserido != "(" && penultimoValorInserido != "+" && penultimoValorInserido != "-" && penultimoValorInserido != "x" && penultimoValorInserido != "/") {
+                divResultadoCalculo.textContent += " x " + valorTecla;
+            }
+            else {
+                divResultadoCalculo.textContent += valorTecla;
+            }
+            break;
+
+        case "AC":
+            divResultadoCalculo.textContent = 0;
+            divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
+            break;
+
+        case "CE":
+            if (ultimoValorInserido == "" || ultimoValorInserido == " " || ultimoValorInserido == "+" || ultimoValorInserido == "-" || ultimoValorInserido == "x" || ultimoValorInserido == "/" || ultimoValorInserido == "s" || ultimoValorInserido == "N") {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
+            }
+            else if (ultimoValorInserido == "y") {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 8);
+            }
+            // Se o ultimo valor presente no resultado tiver um tamanho de caracteres maior que 12
+            else if (divResultadoCalculo.textContent.split(" ")[divResultadoCalculo.textContent.split(" ").length - 1].includes("e")) {
+                // Substitui o ultimo valor por ""
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/\b\d+(\.\d+)?e[+-]?\d+\b\s*$/, "");
+            }
+            else {
+                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 1);
+            }                    
+
+            if (divResultadoCalculo.textContent == "") {
+                divResultadoCalculo.textContent = 0;
             }
             break;
 
@@ -70,6 +109,26 @@ function acaoCalculadora(valorTecla) {
             }
             else if (divResultadoCalculo.textContent.split(" ").length - 1 > 0 && (divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1).includes(".") || divResultadoCalculo.textContent.substring(divResultadoCalculo.textContent.lastIndexOf(" ") + 1) > 0)) {
                 divResultadoCalculo.textContent += valorTecla;
+            }
+            break;
+    
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            if (((divResultadoCalculo.textContent.length == 1 && document.querySelector("div#resultado-calculo") == 0) && ultimoValorInserido != ".") || (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0)) {
+                divResultadoCalculo.textContent = valorTecla;
+            }
+            else if (ultimoValorInserido != "s") {
+                divResultadoCalculo.textContent += valorTecla;
+            }    
+            else {
+                divResultadoCalculo.textContent += " x " + valorTecla;
             }
             break;
 
@@ -120,89 +179,30 @@ function acaoCalculadora(valorTecla) {
                 divResultadoCalculo.textContent += " " + valorTecla + " ";
             }
             break;
+
+        case ",":
+        case ".":
+            if (valorTecla == ",") {
+                valorTecla = ".";
+            }
+                    
+            let contadorDeEspacosVazios;
+            let contadorDePontos = divResultadoCalculo.textContent.split(".").length - 1;
         
-        case "Ans":
-            if (document.querySelector("div#resultado-calculo") == 0 && ultimoValorInserido != "." && (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/")) {
-                divResultadoCalculo.textContent = valorTecla;
-            }
-            else if (ultimoValorInserido == "s") {
-                divResultadoCalculo.textContent += " x " + valorTecla;
-            }
-            else if (ultimoValorInserido != "." && ultimoValorInserido != "(" && penultimoValorInserido != "+" && penultimoValorInserido != "-" && penultimoValorInserido != "x" && penultimoValorInserido != "/") {
-                divResultadoCalculo.textContent += " x " + valorTecla;
-            }
-            else {
-                divResultadoCalculo.textContent += valorTecla;
-            }
-            break;
-
-        case "1":
-        case "2":
-        case "3":
-        case "4":
-        case "5":
-        case "6":
-        case "7":
-        case "8":
-        case "9":
-            if (((divResultadoCalculo.textContent.length == 1 && document.querySelector("div#resultado-calculo") == 0) && ultimoValorInserido != ".") || (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0)) {
-                divResultadoCalculo.textContent = valorTecla;
-            }
-            else if (ultimoValorInserido != "s") {
-                divResultadoCalculo.textContent += valorTecla;
-            }    
-            else {
-                divResultadoCalculo.textContent += " x " + valorTecla;
+            if (ultimoValorInserido != " ") {
+                if (divResultadoCalculo.textContent.split(" ").length - 1 == 0) {
+                    contadorDeEspacosVazios = 1;
+                }
+                else {
+                    contadorDeEspacosVazios = 1 + divResultadoCalculo.textContent.split(" ").length - 1;
+                }
+                            
+                if (contadorDeEspacosVazios > 0 && contadorDeEspacosVazios > contadorDePontos && (ultimoValorInserido != "(" && ultimoValorInserido >= 0)) {
+                    divResultadoCalculo.textContent += valorTecla;
+                }
             }
             break;
-
-        case "(":
-            if (divResultadoCalculo.textContent.length == 1 && ultimoValorInserido == 0) {
-                divResultadoCalculo.textContent = "("
-            }
-            else if (penultimoValorInserido == "+" || penultimoValorInserido == "-" || penultimoValorInserido == "x" || penultimoValorInserido == "/") {
-                divResultadoCalculo.textContent += " (";
-            }
-            else if ((!isNaN(ultimoValorInserido) && divResultadoCalculo.textContent != 0) || ultimoValorInserido == "s") {
-                divResultadoCalculo.textContent += " x (";
-            }
-            break;
-            
-        case ")":
-            var contadorDeAberturaDeParenteses = divResultadoCalculo.textContent.split("(").length - 1;
-            var contadorDeFechamentoDeParenteses = divResultadoCalculo.textContent.split(")").length - 1;
-            
-            if (contadorDeAberturaDeParenteses > 0 && contadorDeAberturaDeParenteses > contadorDeFechamentoDeParenteses && (ultimoValorInserido != "(")) {
-                divResultadoCalculo.textContent += ")";
-            }
-            break;
-
-        case "AC":
-            divResultadoCalculo.textContent = 0;
-            divRespostaAnterior.textContent = "Ans = " + respostaAnterior;
-            break;
-
-        case "CE":
-            if (ultimoValorInserido == "" || ultimoValorInserido == " " || ultimoValorInserido == "+" || ultimoValorInserido == "-" || ultimoValorInserido == "x" || ultimoValorInserido == "/" || ultimoValorInserido == "s" || ultimoValorInserido == "N") {
-                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 3);
-            }
-            else if (ultimoValorInserido == "y") {
-                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 8);
-            }
-            // Se o ultimo valor presente no resultado tiver um tamanho de caracteres maior que 12
-            else if (divResultadoCalculo.textContent.split(" ")[divResultadoCalculo.textContent.split(" ").length - 1].includes("e")) {
-                // Substitui o ultimo valor por ""
-                divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/\b\d+(\.\d+)?e[+-]?\d+\b\s*$/, "");
-            }
-            else {
-                divResultadoCalculo.textContent = divResultadoCalculo.textContent.substring(0, divResultadoCalculo.textContent.length - 1);
-            }                    
-
-            if (divResultadoCalculo.textContent == "") {
-                divResultadoCalculo.textContent = 0;
-            }
-            break;
-
+        
         case "Enter":
         case "=":
             if (ultimoValorInserido != " " && ultimoValorInserido != "(") {
@@ -225,10 +225,24 @@ function acaoCalculadora(valorTecla) {
                     divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/Ans/g, respostaAnterior);
                     divResultadoCalculo.textContent = divResultadoCalculo.textContent.replace(/(\d)\(/g, "$1*(");
                     
-                    var resultadoDoCalculo = eval(divResultadoCalculo.textContent);
-                    if (resultadoDoCalculo < 0) {
+                    var resultadoDoCalculo = eval(divResultadoCalculo.textContent).toString();
+                    if (resultadoDoCalculo.includes(".")) {
+                        let quantidadeCasasDecimais;
+
+                        if (resultadoDoCalculo.split(".")[1].length >= 4) {
+                            quantidadeCasasDecimais = 4;
+                        }
+                        else {
+                            quantidadeCasasDecimais = resultadoDoCalculo.split(".")[1].length;
+                        }
+                        
+                        const fator = Math.pow(10, quantidadeCasasDecimais);
+                        resultadoDoCalculo = Math.round(parseFloat(resultadoDoCalculo) * fator) / fator;
+                    }
+
+                    if (eval(resultadoDoCalculo) < 0) {
                         resultadoDoCalculo = resultadoDoCalculo.toString();
-                        resultadoDoCalculo = resultadoDoCalculo.slice(0, 1) + ' ' + resultadoDoCalculo.slice(1);
+                        resultadoDoCalculo = resultadoDoCalculo.slice(0, 1) + " " + resultadoDoCalculo.slice(1);
                     }
 
                     // Atualizando os valores..
@@ -241,9 +255,6 @@ function acaoCalculadora(valorTecla) {
                     if (formulaDoCalculo.indexOf("+") > -1 || formulaDoCalculo.indexOf("-") > -1 || formulaDoCalculo.indexOf("x") > -1 || formulaDoCalculo.indexOf("/") > -1) {
                         if (!spanAvisoNenhumCalculo.classList.contains("d-none"))
                             spanAvisoNenhumCalculo.classList.add("d-none");
-                        
-                        if (resultadoDoCalculo.toString().length > 12)
-                            resultadoDoCalculo = parseFloat(resultadoDoCalculo).toExponential();
                         
                         var divResultado = document.createElement("div");
                         divResultado.onclick = function() {
@@ -311,7 +322,7 @@ document.addEventListener("keydown", function(event) {
         acaoCalculadora(teclaPressionada);
     }
     else if (teclaPressionada == "Backspace") {
-        acaoCalculadora(apagarValorDoCalculo.textContent);
+        acaoCalculadora(document.querySelector("button#ac-ce").textContent);
     }
 });
 
